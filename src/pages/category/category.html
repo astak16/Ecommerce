@@ -86,7 +86,7 @@
                         </div>
                         <div class="detail">
                           <div class="title">{{item.name}}</div>
-                          <div class="price">￥{{item.price | addTwoDecimal}}</div>
+                          <div class="price">￥{{item.price | currency}}</div>
                           <div class="recommend">
                             <span>推荐值:</span>
                             <span>{{item.recommend}}</span>
@@ -108,7 +108,7 @@
                     >
                       <div class="shop-title">
                         <span class="badge">{{index+1}}</span>
-                        <a :href="item.clickUrl">幸福西饼</a>
+                        <a :href="item.clickUrl">{{item.name}}</a>
                         <span class="follows"> / 关注度: {{item.follows}}</span>
                       </div>
                       <ul class="shop-images">
@@ -137,6 +137,7 @@
                 <li class="category-item js-category-item" data-item-id="item.id" data-item-name="item.name"
                     v-for="(item) in subData.brandList"
                     :key="item.id"
+                    @click="toSearch(item)"
                 >
                   <img :src="item.img" alt="item.name" class="category-img">
                   <span class="category-item-name">{{item.name}}</span>
@@ -147,6 +148,7 @@
                 <li class="category-item js-category-item" data-item-id="item.id" data-item-name="item.name"
                     v-for="item in subData.categoryList"
                     :key="item.id"
+                    @click="toSearch(item)"
                 >
                   <img :src="item.img" alt="item.name" class="category-img">
                   <span class="category-item-name">{{item.name}}</span>

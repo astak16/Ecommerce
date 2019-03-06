@@ -1,17 +1,57 @@
 <template>
   <div class="bottom-nav">
     <ul>
-      <li class="active"><a href="https://maijia.youzan.com/mars/homepage"><i class="icon-home"></i><div>有赞</div></a></li>
-      <li><a href="https://maijia.youzan.com/mars/category"><i class="icon-category"></i><div>分类</div></a></li>
-      <li><a href="https://h5.youzan.com/v2/trade/cart?f_platform=yzapp&amp;source=yzapp"><i class="icon-cart"></i><div>购物车</div></a></li>
-      <li><a href="https://h5.youzan.com/v2/buyer/member"><i class="icon-user"></i><div>我</div></a></li>
+      <li :class="{active: index === curIndex}"
+          v-for="(item, index) in navConfig"
+          :key="item.id"
+          @click="changePage(item, index)"
+      >
+        <a>
+          <i :class="item.icon"></i>
+          <div>{{item.name}}</div>
+        </a>
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
+import qs from 'qs'
+
+let { index } = qs.parse(location.search.substr(1))
 export default {
-  name: 'Foot'
+  name: 'Foot',
+  data () {
+    return {
+      navConfig: [{
+        id: '1',
+        url: 'index.html',
+        icon: 'icon-home',
+        name: '有赞'
+      }, {
+        id: '2',
+        url: 'category.html',
+        icon: 'icon-category',
+        name: '分类'
+      }, {
+        id: '3',
+        url: 'cart.html',
+        icon: 'icon-cart',
+        name: '购物车'
+      }, {
+        id: '4',
+        url: 'member.html',
+        icon: 'icon-user',
+        name: '我'
+      }],
+      curIndex: parseInt(index) || 0
+    }
+  },
+  methods: {
+    changePage (item, index) {
+      location.href = `${item.url}?index=${index}`
+    }
+  }
 }
 </script>
 
@@ -22,7 +62,7 @@ export default {
     height: 50px;
     bottom: 0;
     background-color: #fff;
-    z-index: 8;
+    z-index: 99999;
     -o-border-image: url(https://b.yzcdn.cn/v2/image/wap/border-line-2.png) 2 stretch;
     border-image: url(https://b.yzcdn.cn/v2/image/wap/border-line-2.png) 2 stretch;
     border-top: 2px solid #e5e5e5
