@@ -182,20 +182,17 @@ Vue 为我们提供了一个`filters`的属性，它可以对某个值进行格�
 <div class="price">￥{{item.price | addTwoDecimal}}</div>
 
 filters: {
-  addTwoDecimal (price) {                               // 做小数判断不满两位，补全
-    let index = price.toString().indexOf('.') + 1       // 获取小数点的位置
-    let digit = price.toString().length - index         // 小数位数 = 总长度 - 小数点的位置
-    let newPrice
-    if (digit === 0) {        // 等于 0 说明，有两位小数，等于 1 说明有 1 位小数，等于 2 说明没有小数
-      newPrice = price
-    } else if (digit === 1) {
-      newPrice = price + '0'
-    } else if (digit === 2) {
-      newPrice = price + '.00'
+  // 做小数判断不满两位，补全
+  currency (price) {
+    let priceStr = price + ''
+    if (priceStr.indexOf('.') > -1) {
+      let arr = priceStr.split('.')
+      return arr[0] + '.' + (arr[1] + '0').substr(0, 2)
+    } else {
+      return price + '.00'
     }
-    return newPrice
   }
 }
 ```
 
-其原理为通过获取小数点的位置，然后用**数字的总长度减去小数点所在的位置**就能得到位数，接着在做判断时需要注意，**等于 0 说明，有两位小数，等于 1 说明有 1 位小数，等于 2 说明没有小数**
+其原理为通过用`indexOf`找到小数点的位置，如果没有小数点，`indexOf`返回的值为`-1`，说明没有小数点，直接在后面添加上`.00`就行了；如果返回值为非`-1`说明有小数点，然后通过`split`拆分成两段，给第一段末尾加上`0`，并用`substr`截取前两位。
