@@ -51,10 +51,10 @@
     <div class="search-content" style="display: none;"></div>
     <div class="content">
       <div class="search-wrap js-waterfull-wrap">
-        <ul class="js-list"
+        <ul class="js-list js-lazy"
             v-infinite-scroll="getSearchList"
-            infinite-scroll-disabled="loading"
-            infinite-scroll-distance="30"
+            infinite-scroll-disabled="loading_more"
+            infinite-scroll-distance="10"
         >
           <li class="goods-item" v-for="item in searchList" :key="item.id">
             <a href="">
@@ -72,7 +72,7 @@
             </a>
           </li>
         </ul>
-        <div class="loading-more" v-show="loading"><span></span></div>
+        <!--<div class="loading-more" v-show="loading_more"><span></span></div>-->
         <!--<div class="list-finished">已经没有更多了</div>-->
       </div>
     </div>

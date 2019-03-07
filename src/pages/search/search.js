@@ -18,7 +18,7 @@ new Vue({
     searchList: null,
     isShow: false,
     allLoaded: false,
-    loading: false,
+    loading_more: false,
     keyword,
     pageSize: 8,
     pageNum: 0
@@ -28,25 +28,27 @@ new Vue({
   },
   methods: {
     getSearchList () {
+      if (this.allLoaded) return
+      this.loading_more = true
       axios.get(url.searchList, {
         keyword,
         id,
         pageSize: this.pageSize,
         pageNum: this.pageNum
       }).then(res => {
-        if (this.allLoaded) return
-        this.loading = true
+        let curSearchList = res.data.lists
 
-        let curLists = res.data.lists
-        if (curLists.length < this.pageSize) {
+        if (curSearchList.length < this.pageSize) {
           this.allLoaded = true
         }
+
         if (this.searchList) {
-          this.searchList = this.searchList.concat(curLists)
+          this.searchList = this.searchList.concat(curSearchList)
         } else {
-          this.searchList = curLists
+          this.searchList = curSearchList
         }
-        this.loading = false
+
+        this.loading_more = false
         this.pageNum++
       })
     },

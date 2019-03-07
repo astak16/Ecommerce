@@ -24,7 +24,7 @@ let app = new Vue({
     Foot, Swiper
   },
   created () {
-    this.getLists()
+    // this.getLists()
     this.getBanner()
   },
   methods: {
@@ -41,12 +41,14 @@ let app = new Vue({
         if (curLists.length < this.pageSize) {
           this.allLoaded = true
         }
+
         if (this.lists) {
           this.lists = this.lists.concat(curLists)
         } else {
           // 第一次请求数据
           this.lists = curLists
         }
+
         this.loading = false
         this.pageNum++
       })
