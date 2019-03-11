@@ -57,7 +57,7 @@
             infinite-scroll-distance="10"
         >
           <li class="goods-item" v-for="item in searchList" :key="item.id">
-            <a href="">
+            <a :href="'goods.html?id='+item.id">
               <div class="thumb">
                 <img :src="item.img">
                 <i class="sell-out" v-if="item.isOut"></i>

@@ -79,7 +79,7 @@
                         v-for="(item, index) in rankData.hotGoods"
                         :key="index"
                     >
-                      <a href="item.clickUrl">
+                      <a :href="'goods.html?id='+item.id">
                         <div class="thumb badge center-img">
                           <img :src="item.img">
                           <span class="num">{{index+1}}</span>

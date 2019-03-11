@@ -1,0 +1,14 @@
+.fade-enter{
+  transform: translateY(100%);
+}
+.fade-enter-to{
+  transform: translateY(0);
+  transition: all 3s ease;
+}
+.fade-leave-to{
+  transform: translateY(0);
+}
+.fade-leave-active{
+  transform: translateY(100%);
+  transition: all 3s ease;
+}
