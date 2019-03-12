@@ -1709,3 +1709,131 @@ only screen and (min-device-pixel-ratio: 1.5) {
   top: initial;
   bottom: 0px
 }
+
+.van-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 85%;
+  font-size: 16px;
+  overflow: hidden;
+  -webkit-transition: .3s;
+  transition: .3s;
+  border-radius: 4px;
+  background-color: #fff;
+  -webkit-transform: translate3d(-50%,-50%,0);
+  transform: translate3d(-50%,-50%,0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.van-dialog__message {
+  padding: 25px;
+  font-size: 14px;
+  line-height: 1.5;
+  max-height: 60vh;
+  overflow-y: auto;
+  text-align: center;
+  -webkit-overflow-scrolling: touch;
+}
+.van-dialog__footer--buttons {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+}
+.van-dialog__footer {
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+[class*=van-hairline] {
+  position: relative;
+}
+.van-dialog .van-button {
+  border: 0;
+}
+.van-dialog__footer--buttons .van-button {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+.van-button--large {
+  width: 100%;
+  height: 50px;
+  line-height: 48px;
+}
+.van-button--default {
+  color: #323233;
+  background-color: #fff;
+  border: 1px solid #ebedf0;
+}
+.van-button {
+  position: relative;
+  padding: 0;
+  display: inline-block;
+  height: 44px;
+  line-height: 42px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  font-size: 16px;
+  text-align: center;
+  -webkit-appearance: none;
+  -webkit-text-size-adjust: 100%;
+}
+.van-dialog .van-button {
+  border: 0;
+}
+.van-dialog__footer--buttons .van-button {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+}
+.van-dialog__confirm, .van-dialog__confirm:active {
+  color: #1989fa;
+}
+.van-button--large {
+  width: 100%;
+  height: 50px;
+  line-height: 48px;
+}
+.van-button--default {
+  color: #323233;
+  background-color: #fff;
+  border: 1px solid #ebedf0;
+}
+.van-button {
+  position: relative;
+  padding: 0;
+  display: inline-block;
+  height: 44px;
+  line-height: 42px;
+  border-radius: 2px;
+  box-sizing: border-box;
+  font-size: 16px;
+  text-align: center;
+  -webkit-appearance: none;
+  -webkit-text-size-adjust: 100%;
+}
+.van-hairline--top:after {
+  border-top-width: 1px;
+}
+[class*=van-hairline]:after {
+  content: " ";
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  -webkit-transform: scale(.5);
+  transform: scale(.5);
+  border: 0 solid #ebedf0;
+}
+.van-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,.7);
+}

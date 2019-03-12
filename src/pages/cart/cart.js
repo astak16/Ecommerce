@@ -7,6 +7,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import url from 'js/api.js'
 import mixin from 'js/mixin.js'
+import Velocity from 'velocity-animate'
 
 let cart = new Vue({
   el: '.cart',
@@ -14,7 +15,10 @@ let cart = new Vue({
     shopLists: null,
     total: 0,
     editingShop: null,
-    editingShopIndex: -1
+    editingShopIndex: -1,
+    removeData: null,
+    removePopup: false,
+    removeMsg: ''
   },
   methods: {
     getList () {
@@ -35,24 +39,28 @@ let cart = new Vue({
     },
     // 商品选择
     selectGood (shopItem, goodItem) {
-      goodItem.checked = !goodItem.checked
-      shopItem.checked = shopItem.goodsList.every(good => {
-        return good.checked
+      let attr = this.editingShop ? 'removeChecked' : 'checked'
+      goodItem[attr] = !goodItem[attr]
+      shopItem[attr] = shopItem.goodsList.every(good => {
+        return good[attr]
       })
     },
     // 店铺选择
     selectShop (shopItem) {
-      shopItem.checked = !shopItem.checked
+      let attr = this.editingShop ? 'removeChecked' : 'checked'
+      shopItem[attr] = !shopItem[attr]
       shopItem.goodsList.forEach(good => {
         // 点击店铺时，如果 shop 为 true，则 good 都为 true；
         // 点击店铺时，如果 shop 为 false，则 good 都为 false
-        good.checked = shopItem.checked
+        good[attr] = shopItem[attr]
       })
     },
     // 所有全选
     selectAll () {
+      let attr = this.editingShop ? 'allRemoveSelect' : 'allSelect'
+
       // 点击底部全选时，只需要判断店铺有没有被全选
-      this.allSelect = !this.allSelect
+      this[attr] = !this[attr]
     },
     edit (shopItem, shopIndex) {
       shopItem.editing = !shopItem.editing
@@ -65,6 +73,96 @@ let cart = new Vue({
       })
       this.editingShop = shopItem.editing ? shopItem : null
       this.editingShopIndex = shopItem.editing ? shopIndex : -1
+    },
+    reduce (goodItem) {
+      if (goodItem.number > 1) {
+        axios.post(url.cartReduce, {
+          id: goodItem.id
+        }).then(res => {
+          goodItem.number--
+        })
+      }
+    },
+    add (goodItem) {
+      axios.post(url.cartAdd, {
+        id: goodItem.id
+      }).then(res => {
+        goodItem.number++
+      })
+    },
+    remove (shopItem, shopIndex, goodItem, goodIndex) {
+      this.removeData = {shopItem, shopIndex, goodItem, goodIndex}
+      this.removePopup = true
+      this.removeMsg = '确定要删除商品吗？'
+    },
+    removeList () {
+      this.removePopup = true
+      this.removeMsg = `确定要删除${this.removeLists.length}个商品吗？`
+    },
+    removeConfirm () {
+      if (this.removeMsg === '确定要删除商品吗') {
+        let { shopItem, shopIndex, goodItem, goodIndex } = this.removeData
+        axios.post(url.cartRemove, {
+          id: goodItem.id
+        }).then(res => {
+          shopItem.goodsList.splice(goodIndex, 1)
+          this.removePopup = false
+          if (!shopItem.goodsList.length) {
+            this.shopLists.splice(shopIndex, 1)
+            this.resetShop()
+          }
+        })
+      } else {
+        let ids = []
+        this.removeLists.forEach(good => {
+          ids.push(good.id)
+        })
+        axios.post(url.cartMremove, { ids }).then(res => {
+          let arr = []
+          this.editingShop.goodsList.forEach(good => {
+            let index = this.removeLists.findIndex(item => {
+              return item.id === good.id
+            })
+            if (index === -1) {
+              arr.push(good)
+            }
+          })
+          if (arr.length) {
+            this.editingShop.goodsList = arr
+          } else {
+            this.shopLists.splice(this.editingShopIndex, 1)
+            this.resetShop()
+          }
+          this.removePopup = false
+        })
+      }
+    },
+    cancelConfirm () {
+      this.removePopup = false
+    },
+    resetShop () {
+      this.editingShop = null
+      this.editingShopIndex = -1
+      this.shopLists.forEach(shop => {
+        shop.editing = false
+        shop.editingMsg = '编辑'
+      })
+    },
+    start (e, goodItem) {
+      goodItem.startX = e.changedTouches[0].clientX
+    },
+    end (e, shopIndex, goodItem, goodIndex) {
+      let endX = e.changedTouches[0].clientX
+      let left = '0'
+      if (goodItem.startX - endX > 100) {
+        left = '-60px'
+      }
+      if (goodItem.startX - endX < 100) {
+        left = '0px'
+      }
+      Velocity(this.$refs[`goods-${shopIndex}-${goodIndex}`], {
+        left
+      })
     }
   },
   computed: {
@@ -89,6 +187,20 @@ let cart = new Vue({
         })
       }
     },
+    allRemoveSelect: {
+      get () {
+        if (this.editingShop) {
+          return this.editingShop.removeChecked
+        }
+        return false
+      },
+      set (newVal) {
+        this.editingShop.removeChecked = newVal
+        this.editingShop.goodsList.forEach(good => {
+          good.removeChecked = newVal
+        })
+      }
+    },
     selectLists () {
       if (this.shopLists && this.shopLists.length) {
         // arr 是用来判断选中商品的个数
@@ -104,6 +216,18 @@ let cart = new Vue({
           })
         })
         this.total = total
+        return arr
+      }
+      return []
+    },
+    removeLists () {
+      if (this.editingShop) {
+        let arr = []
+        this.editingShop.goodsList.forEach(good => {
+          if (good.removeChecked) {
+            arr.push(good)
+          }
+        })
         return arr
       }
       return []
